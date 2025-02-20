@@ -6,22 +6,10 @@
 static uint8_t password[4] = {1, 2, 3, 8};
 static uint8_t password_in[4] = {0};
 
-int main(void)
+
+/* void Keyboard(uint8_t keyValue)
 {
-	uint8_t i = 0;
-	uint8_t keyValue = 0;
-
-	OLED_Init();
-	Keyboard_Init();
-
-	OLED_ShowString(0, 0, "Current Password:", OLED_8X16);
-	OLED_Update();
-
-	while(1)
-	{
-		keyValue = Key_Scan();
-
-		if(keyValue == 99)
+	if(keyValue == 99)
 			continue;
 
 		if(keyValue == 10)
@@ -52,6 +40,25 @@ int main(void)
 			i ++;
 		else
 			i = 0;
+} */
+
+
+int main(void)
+{
+	uint8_t i = 0;
+	uint8_t keyValue = 0;
+	
+	OLED_Init();
+	Keyboard_Init();
+
+	OLED_ShowString(0, 0, "Current Password:", OLED_8X16);
+	OLED_Update();
+
+	while(1)
+	{
+		// keyValue = Key_Scan();
+
+		
 		
 		
 	}
