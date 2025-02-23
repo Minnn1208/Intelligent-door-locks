@@ -113,7 +113,6 @@ uint8_t Key_Scan(void)
         return 14;
     else if(Key[0][3] == 1)
         return 15;
-
     else
         return 99;
 

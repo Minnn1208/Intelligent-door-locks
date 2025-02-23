@@ -9,6 +9,43 @@
 /bin
 /obj
 /out
+/Objects
+
+*.rar
+*.o
+*.d
+*.crf
+*.htm
+*.dep
+*.map
+*.bak
+*.lnp
+*.lst
+*.ini
+*.iex
+*.sct
+*.scvd
+*.uvguix
+*.dbg*
+*.uvguix.*
+.mxproject
+ 
+RTE/
+Templates/
+Examples/
+ 
+!*.uvprojx
+!*.h
+!*.c
+!*.ioc
+!*.axf
+!*.bin
+!*.hex
+
+#JLINK file
+JLinkLog.txt
+*.dbgconf
+
 
 # eide template
 *.ept

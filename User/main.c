@@ -1,66 +1,70 @@
 #include "stm32f10x.h"                  // Device header
 #include "OLED.h"
-#include "Keyboard.h"
+#include "Password.h"
 #include "Delay.h"
+#include "ZW101.h"
 
-static uint8_t password[4] = {1, 2, 3, 8};
-static uint8_t password_in[4] = {0};
-
-
-/* void Keyboard(uint8_t keyValue)
-{
-	if(keyValue == 99)
-			continue;
-
-		if(keyValue == 10)
-		{
-			OLED_ClearArea(0, 20, 127, 63);
-			OLED_Update();
-			if(password_in[0] == password[0] && password_in[1] == password[1] && password_in[2] == password[2] 
-				&& password_in[3] == password[3])
-			{
-				OLED_ShowString(0, 30, "Password Correct", OLED_8X16);
-			}
-			else
-			{
-				OLED_ShowString(0, 30, "Password Error", OLED_8X16);
-			}
-			OLED_Update();
-			i = 0;
-			Delay_ms(500);
-			OLED_ClearArea(0, 20, 127, 63);
-			OLED_Update();
-			continue;
-		}
-
-		password_in[i] = keyValue;
-		OLED_ShowNum(30* i, 20, password_in[i], 1, OLED_8X16);
-		OLED_Update();
-		if(i != 3)
-			i ++;
-		else
-			i = 0;
-} */
-
+static uint8_t RxData = 0;
+uint8_t keyValue = 0x00;
+uint8_t count = 0;
 
 int main(void)
 {
-	uint8_t i = 0;
-	uint8_t keyValue = 0;
 	
 	OLED_Init();
 	Keyboard_Init();
+	ZW101_Init();
+	
 
-	OLED_ShowString(0, 0, "Current Password:", OLED_8X16);
-	OLED_Update();
+	ZW101_VerifyThumbCommand();
+
+	
 
 	while(1)
 	{
-		// keyValue = Key_Scan();
+		/* OLED_ShowHexNum(0, 0, rxBuffer[9], 2, OLED_8X16);
+		OLED_ShowHexNum(0, 20, rxBuffer[26], 2, OLED_8X16);
+		OLED_ShowHexNum(0, 40, rxBuffer[43], 2, OLED_8X16);
+		OLED_Update(); */
+		switch (ZW101_VerifyThumb())
+		{
+		case ZW101_VERIFY_PASS:
+			OLED_Clear();
+			OLED_Update();
+			OLED_ShowString(0, 0, "PASS", OLED_8X16);
+			OLED_Update();
+			break;
+		case ZW101_VERIFY_NOT_PASS:
+			OLED_Clear();
+			OLED_Update();
+			OLED_ShowString(0, 0, "NOT PASS", OLED_8X16);
+			OLED_Update();
+			break;
 
+		default:
+			OLED_ShowString(0, 0, "ERROR", OLED_8X16);
+			OLED_Update();
+			break;
+		}
 		
-		
-		
+		Delay_ms(500);
 	}
 
+}
+
+
+void USART1_IRQHandler(void)
+{
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
+	{
+		rxBuffer[count] = USART_ReceiveData(USART1);
+		count ++;
+
+		if(count == 51 && zwState == ZW101_VERIFY_STATE)
+		{
+			FrameComplete();
+		}
+
+		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+	}
 }

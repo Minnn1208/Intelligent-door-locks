@@ -87,7 +87,7 @@ void MySPI_WriteByte(uint8_t byteSend)
 	
 }
 
-uint8_t MySPI_ReadByte(uint8_t address)
+uint8_t MySPI_ReadByte(void)
 {
 	uint8_t byteReceive = 0x00;
 	for (uint8_t i = 0; i < 8; i++)

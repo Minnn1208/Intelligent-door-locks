@@ -8,6 +8,8 @@ uint8_t MySPI_R_MISO(void);
 void MySPI_Init(void);
 void MySPI_Start(void);
 void MySPI_Stop(void);
+void MySPI_WriteByte(uint8_t byteSend);
+uint8_t MySPI_ReadByte(void);
 uint8_t MySPI_SwapByte(uint8_t ByteSend);
 
 

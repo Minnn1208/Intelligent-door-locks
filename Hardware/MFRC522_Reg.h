@@ -106,4 +106,36 @@
 #define DEF_FIFO_LENGTH       64                 //FIFO size=64byte
 #define MAXRLEN  18
 
+/* 预编译 */
+#define               MFRC522_GPIO_SDA_PORT    	               		GPIOA			   
+#define               MFRC522_GPIO_SDA_PIN		                   	GPIO_Pin_4
+											
+#define               MFRC522_GPIO_SCK_PORT    	              		GPIOA			   
+#define               MFRC522_GPIO_SCK_PIN		                  	GPIO_Pin_5
+											
+#define               MFRC522_GPIO_MOSI_PORT    	              	GPIOA			   
+#define               MFRC522_GPIO_MOSI_PIN		                		GPIO_Pin_7
+											
+#define               MFRC522_GPIO_MISO_PORT    	              	GPIOA			   
+#define               MFRC522_GPIO_MISO_PIN		                	GPIO_Pin_6
+											
+#define               MFRC522_GPIO_RST_PORT    	              		GPIOB		   
+#define               MFRC522_GPIO_RST_PIN		                  	GPIO_Pin_0
+
+
+#define          MFRC522_SDA_L          	GPIO_ResetBits ( MFRC522_GPIO_SDA_PORT, MFRC522_GPIO_SDA_PIN )
+#define          MFRC522_SDA_H          	GPIO_SetBits ( MFRC522_GPIO_SDA_PORT, MFRC522_GPIO_SDA_PIN )
+
+#define          MFRC522_RST_L      		GPIO_ResetBits( MFRC522_GPIO_RST_PORT, MFRC522_GPIO_RST_PIN )
+#define          MFRC522_RST_H     			GPIO_SetBits ( MFRC522_GPIO_RST_PORT, MFRC522_GPIO_RST_PIN )
+
+#define          MFRC522_SCK_L            	GPIO_ResetBits( MFRC522_GPIO_SCK_PORT, MFRC522_GPIO_SCK_PIN )
+#define          MFRC522_SCK_H            	GPIO_SetBits ( MFRC522_GPIO_SCK_PORT, MFRC522_GPIO_SCK_PIN )
+
+#define          MFRC522_MOSI_L           	GPIO_ResetBits( MFRC522_GPIO_MOSI_PORT, MFRC522_GPIO_MOSI_PIN )
+#define          MFRC522_MOSI_H            	GPIO_SetBits ( MFRC522_GPIO_MOSI_PORT, MFRC522_GPIO_MOSI_PIN )
+
+#define          MFRC522_MISO_READ          GPIO_ReadInputDataBit ( MFRC522_GPIO_MISO_PORT, MFRC522_GPIO_MISO_PIN )
+
+
 #endif
