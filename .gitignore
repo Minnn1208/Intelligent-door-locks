@@ -57,4 +57,4 @@ JLinkLog.txt
 .vscode
 .pack
 *.code-workspace
-*.clang-format
+*.clang-formatObjects/

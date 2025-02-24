@@ -7,27 +7,42 @@
 #define ZW101_THUMB_PRINT                       1
 #define ZW101_VERIFY                            2
 
+
+#define ZW101_NONE_STATE                        0
+#define ZW101_HANDSHAKE_STATE                   1
+#define ZW101_VERIFY_STATE                      2
+#define ZW101_PRINT_STATE                       3
+
+/* 握手确认位 */
+#define ZW101_HANDSHAKE_SUCCESS                 0x00
+#define ZW101_HANDSHAKE_FAIL                    0x01
+#define ZW101_HANDSHAKE_ERROR                   0x02
+
 /* 指纹验证确认位 */
-#define ZW101_VERIFY_STATE                      1
-#define ZW101_PRINT_STATE                       2
-
-
 #define ZW101_VERIFY_PASS                       0x01
 #define ZW101_VERIFY_NOT_PASS                   0x02
 #define ZW101_VERIFY_ERROR                      0x03
 
 extern uint8_t zwState;
 extern uint8_t rxBuffer[];
-extern uint8_t frameComplete;
+// extern uint8_t frameComplete;
+extern uint8_t rxBufferCount;
 
 typedef struct 
 {
-    uint8_t commandArrary[20];
+    uint8_t commandArray[20];
     uint8_t length;
     uint8_t replyLength;
 }ZW101Command;
 
+typedef struct 
+{
+    uint8_t packageHead[] = {0xEF, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0x07};
+    uint8_t certaincode
+};
 
+
+extern ZW101Command handShake;
 extern ZW101Command verification;
 /* 基本信息指令 EF 01 FF FF FF FF 01 00 03 0F 00 13 */
 extern ZW101Command baseInformation;
@@ -36,6 +51,8 @@ extern ZW101Command thumbPrint;
 
 
 void ZW101_Init(void);
+void ZW101_HandShakeCommand(void);
+uint8_t ZW101_HandShakeVerify(void);
 void ZW101_ThumbPrintCommand(void);
 void ZW101_VerifyThumbCommand(void);
 uint8_t ZW101_VerifyThumb(void);

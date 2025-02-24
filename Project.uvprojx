@@ -333,7 +333,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>--no-multibyte-chars</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
               <IncludePath>.\Start;.\Library;.\User;.\Hardware;.\System</IncludePath>
@@ -435,6 +435,16 @@
               <FileType>5</FileType>
               <FilePath>.\User\stm32f10x_it.h</FilePath>
             </File>
+            <File>
+              <FileName>Password.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Password.c</FilePath>
+            </File>
+            <File>
+              <FileName>Password.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Password.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -469,6 +479,61 @@
               <FileName>OLED_Data.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\OLED_Data.h</FilePath>
+            </File>
+            <File>
+              <FileName>Keyboard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Keyboard.c</FilePath>
+            </File>
+            <File>
+              <FileName>Keyboard.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Keyboard.h</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC522.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MFRC522.c</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC522.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MFRC522.h</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC522_Reg.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MFRC522_Reg.h</FilePath>
+            </File>
+            <File>
+              <FileName>MySPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MySPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>MySPI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MySPI.h</FilePath>
+            </File>
+            <File>
+              <FileName>Serial.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Serial.c</FilePath>
+            </File>
+            <File>
+              <FileName>Serial.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Serial.h</FilePath>
+            </File>
+            <File>
+              <FileName>ZW101.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\ZW101.c</FilePath>
+            </File>
+            <File>
+              <FileName>ZW101.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\ZW101.h</FilePath>
             </File>
           </Files>
         </Group>
