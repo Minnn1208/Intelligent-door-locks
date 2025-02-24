@@ -44,7 +44,7 @@ int main(void)
 {
 	Mode_Init(&mainState);
 	OLED_Init();
-	Keyboard_Init();
+	/* Keyboard_Init(); */
 	ZW101_Init();
 	Delay_ms(80);
 
@@ -68,7 +68,7 @@ int main(void)
 	while(1)
 	{
 
-		keyValue = Key_Scan();
+		/* keyValue = Key_Scan(); */
 		/* keyValue = Key_Scan();
 		OLED_Clear();
 		OLED_ShowNum(30, 30, keyValue, 2, OLED_8X16);
@@ -79,9 +79,9 @@ int main(void)
 		case MODE_FINGERPRINT:
 			Thumb_OpenDoor();
 			break;
-		case MODE_PASSWORD:
+		/* case MODE_PASSWORD:
 			Password_Component(keyValue);
-			break;
+			break; */
 			
 		default:
 			OLED_Clear();

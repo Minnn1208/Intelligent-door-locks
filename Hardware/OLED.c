@@ -97,7 +97,7 @@ uint8_t OLED_DisplayBuf[8][128];
 void OLED_W_D0(uint8_t BitValue)
 {
 	/*根据BitValue的值，将D0置高电平或者低电平*/
-	GPIO_WriteBit(GPIOB, GPIO_Pin_12, (BitAction)BitValue);
+	GPIO_WriteBit(GPIOA, GPIO_Pin_4, (BitAction)BitValue);
 }
 
 /**
@@ -111,7 +111,7 @@ void OLED_W_D0(uint8_t BitValue)
 void OLED_W_D1(uint8_t BitValue)
 {
 	/*根据BitValue的值，将D1置高电平或者低电平*/
-	GPIO_WriteBit(GPIOB, GPIO_Pin_13, (BitAction)BitValue);
+	GPIO_WriteBit(GPIOA, GPIO_Pin_5, (BitAction)BitValue);
 }
 
 /**
@@ -125,7 +125,7 @@ void OLED_W_D1(uint8_t BitValue)
 void OLED_W_RES(uint8_t BitValue)
 {
 	/*根据BitValue的值，将RES置高电平或者低电平*/
-	GPIO_WriteBit(GPIOB, GPIO_Pin_14, (BitAction)BitValue);
+	GPIO_WriteBit(GPIOA, GPIO_Pin_6, (BitAction)BitValue);
 }
 
 /**
@@ -139,7 +139,7 @@ void OLED_W_RES(uint8_t BitValue)
 void OLED_W_DC(uint8_t BitValue)
 {
 	/*根据BitValue的值，将DC置高电平或者低电平*/
-	GPIO_WriteBit(GPIOB, GPIO_Pin_15, (BitAction)BitValue);
+	GPIO_WriteBit(GPIOA, GPIO_Pin_7, (BitAction)BitValue);
 }
 
 /**
@@ -153,7 +153,7 @@ void OLED_W_DC(uint8_t BitValue)
 void OLED_W_CS(uint8_t BitValue)
 {
 	/*根据BitValue的值，将CS置高电平或者低电平*/
-	GPIO_WriteBit(GPIOA, GPIO_Pin_8, (BitAction)BitValue);
+	GPIO_WriteBit(GPIOB, GPIO_Pin_0, (BitAction)BitValue);
 }
 
 /**
@@ -180,16 +180,16 @@ void OLED_GPIO_Init(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
  	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+ 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+ 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+ 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+ 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	/*置引脚默认电平*/
 	OLED_W_D0(0);
