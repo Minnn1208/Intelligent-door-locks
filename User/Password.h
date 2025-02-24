@@ -1,6 +1,7 @@
 #ifndef __PASSWORD_H__
 #define __PASSWORD_H__
 #include "Keyboard.h"
+#include "Mode.h"
 
 #define PASSWORD_LEN 4
 #define PASSWORD_ERR 0x00

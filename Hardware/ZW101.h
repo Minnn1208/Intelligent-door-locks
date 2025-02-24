@@ -1,7 +1,13 @@
 #ifndef __ZW101_H__
 #define __ZW101_H__
+
+#include "stm32f10x.h"
 #include <stdint.h>
+#include <string.h>
 #include "Serial.h"
+#include "Delay.h"
+#include "OLED.h"
+
 
 #define RX_BUFFER_SIZE                          99
 #define ZW101_THUMB_PRINT                       1
@@ -35,13 +41,6 @@ typedef struct
     uint8_t replyLength;
 }ZW101Command;
 
-typedef struct 
-{
-    uint8_t packageHead[] = {0xEF, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0x07};
-    uint8_t certaincode
-};
-
-
 extern ZW101Command handShake;
 extern ZW101Command verification;
 /* 基本信息指令 EF 01 FF FF FF FF 01 00 03 0F 00 13 */
@@ -61,5 +60,6 @@ void FrameComplete(void);
 void FrameNotComplete(void);
 uint8_t GetFrameComplete(void);
 void Clear_Buffer(void);
+void Thumb_OpenDoor(void);
 
 #endif

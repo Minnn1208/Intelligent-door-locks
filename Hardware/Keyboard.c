@@ -1,5 +1,5 @@
-#include "stm32f10x.h"                  // Device header
-#include "Delay.h"
+#include "Keyboard.h"
+
 
 struct Key_Struct
 {
@@ -7,7 +7,7 @@ struct Key_Struct
     uint16_t GPIO_Pin;
 };
 
-/* 由上到下对应C1 C2 C3 C4 */
+/* 由上到下对应C4 C3 C2 C1 */
 static struct Key_Struct Key_Column[4] = {
     {GPIOB, GPIO_Pin_11},
     {GPIOB, GPIO_Pin_10},
@@ -66,7 +66,7 @@ uint8_t Key_Scan(void)
         GPIO_ResetBits(Key_Row[i].GPIOx, Key_Row[i].GPIO_Pin);
         for(j = 0; j < 4; j++)
         {
-            Delay_ms(10);
+            Delay_ms(20);
             if(GPIO_ReadInputDataBit(Key_Column[j].GPIOx, Key_Column[j].GPIO_Pin) == 0)
             {
                 Key[i][j] = 1;
@@ -80,38 +80,73 @@ uint8_t Key_Scan(void)
     }
 
 
+    if(Mode_GetCurrent(&mainState) == MODE_FINGERPRINT)
+    {
+        return 99;
+    }
 
-    if(Key[3][0] == 1)
+
+    if(KEY_VALUE_1() == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 1;
-    else if(Key[3][1] == 1)
+    }
+    else if(KEY_VALUE_2() == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 2;
-    else if(Key[3][2] == 1)
+    }
+    else if(KEY_VALUE_3() == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 3;
-    else if(Key[3][3] == 1)
+    }
+    else if(KEY_VALUE_10() == 1)
         return 10; 
-    else if(Key[2][0] == 1)
+    else if(KEY_VALUE_4()  == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 4;
-    else if(Key[2][1] == 1)
+    }
+    else if(KEY_VALUE_5()  == 1)
+    {   
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 5;
-    else if(Key[2][2] == 1)
+    }
+    else if(KEY_VALUE_6()  == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 6;
-    else if(Key[2][3] == 1)
+    }
+    else if(KEY_VALUE_11()  == 1)
         return 11;
-    else if(Key[1][0] == 1)
+    else if(KEY_VALUE_7()  == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 7;
-    else if(Key[1][1] == 1)
+    }
+    else if(KEY_VALUE_8()  == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 8;
-    else if(Key[1][2] == 1)
+    }
+    else if(KEY_VALUE_9()  == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 9;
-    else if(Key[1][3] == 1)
+    }
+    else if(KEY_VALUE_12()  == 1)
         return 12;
-    else if(Key[0][0] == 1)
+    else if(KEY_VALUE_0()  == 1)
+    {
+        Mode_Set(&mainState, MODE_PASSWORD);
         return 0;
-    else if(Key[0][1] == 1)
+    }
+    else if(KEY_VALUE_13()  == 1)
         return 13;
-    else if(Key[0][2] == 1)
+    else if(KEY_VALUE_14()  == 1)
         return 14;
-    else if(Key[0][3] == 1)
+    else if(KEY_VALUE_15()  == 1)
         return 15;
     else
         return 99;

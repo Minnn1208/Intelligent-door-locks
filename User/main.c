@@ -1,35 +1,13 @@
 #include "stm32f10x.h"                  // Device header
+#include "Mode.h"
 #include "OLED.h"
 #include "Password.h"
 #include "Delay.h"
 #include "ZW101.h"
 
-#define MAIN_IDLE					0x00
-#define MAIN_THUMB_VERIFY			0x01
-#define MAIN_THUMB_REGISTER			0x02
-#define MAIN_KEYBOARD				0x03
-#define MAIN_ADMIN_PAGE				0x04
-#define MAIN_SLEEP					0xFF
 
 
-uint8_t adminEnable = 0x00;
-uint8_t currentState = MAIN_IDLE;
 uint8_t keyValue = 0x00;
-
-void Admin_Enable()
-{
-	adminEnable = 0xFF;
-}
-
-void Admin_Disable()
-{
-	adminEnable = 0x00;
-}
-
-uint8_t Admin_GetState()
-{
-	return adminEnable;
-}
 
 
 void Thumb_OpenDoor(void)
@@ -56,24 +34,19 @@ void Thumb_OpenDoor(void)
 		OLED_ShowString(0, 0, "ZW101_VERIFY_ERROR", OLED_6X8);
 		OLED_Update();
 	}
-	/* else
-	{
-		OLED_Clear();
-		OLED_ShowString(0, 0, "HandShake ERR", OLED_6X8);
-		OLED_Update();
-		Delay_ms(1000);
-	} */
+	Delay_ms(1000);
 	
-	currentState = MAIN_IDLE;
+	Mode_Set(&mainState, MODE_IDLE);
 }
+
 
 int main(void)
 {
-	
+	Mode_Init(&mainState);
 	OLED_Init();
 	Keyboard_Init();
 	ZW101_Init();
-	Delay_ms(500);
+	Delay_ms(80);
 
 	ZW101_HandShakeCommand();
 	Delay_ms(100);
@@ -95,70 +68,47 @@ int main(void)
 	while(1)
 	{
 
-		
-		switch (currentState | Admin_GetState())
-		{
-		case MAIN_THUMB_VERIFY:
-			Thumb_OpenDoor();
-			
-			break;
-		
-		default:
-			/* OLED_Clear();
-			OLED_Update(); */
-			break;
-		}
-
-		OLED_ClearArea(0, 20, 127, 63);
-		OLED_ShowHexNum(0, 20, rxBuffer[0], 2, OLED_8X16);
-		OLED_Update();
-		
-
-/* 		if(testState == 1)
-		{
-			OLED_Clear();
-			OLED_ShowString(0, 0, "High", OLED_8X16);
-			OLED_Update();
-			testState = 0;
-			Delay_ms(100);
-		}
-		else
-		{
-			OLED_Clear();
-			OLED_ShowString(0, 0, "Low", OLED_8X16);
-			OLED_Update();
-			Delay_ms(10);
-		} */
-
-		/* OLED_Clear();
-		OLED_ShowHexNum(0, 0, GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_15), 2, OLED_8X16);
+		keyValue = Key_Scan();
+		/* keyValue = Key_Scan();
+		OLED_Clear();
+		OLED_ShowNum(30, 30, keyValue, 2, OLED_8X16);
 		OLED_Update(); */
-		/* switch (ZW101_VerifyThumb())
+		
+		switch (mainState.currentMode)
 		{
-		case ZW101_VERIFY_PASS:
-			OLED_Clear();
-			OLED_ShowString(0, 0, "PASS", OLED_8X16);
-			OLED_Update();
+		case MODE_FINGERPRINT:
+			Thumb_OpenDoor();
 			break;
-		case ZW101_VERIFY_NOT_PASS:
-			OLED_Clear();
-			OLED_ShowString(0, 0, "NOT PASS", OLED_8X16);
-			OLED_Update();
+		case MODE_PASSWORD:
+			Password_Component(keyValue);
 			break;
-
+			
 		default:
 			OLED_Clear();
-			OLED_ShowString(0, 0, "ERROR", OLED_8X16);
 			OLED_Update();
 			break;
-		} */
-		
+		}
 
-		/* OLED_ShowHexNum(0, 0, rxBuffer[8], 2, OLED_6X8);
-		OLED_ShowHexNum(15, 0, rxBuffer[9], 2, OLED_6X8);
-		OLED_ShowHexNum(30, 0, rxBuffer[10], 2, OLED_6X8);
-		OLED_Update();
-		Delay_ms(500);  */
+		switch (Mode_GetCurrent(&mainState))
+		{
+		case MODE_IDLE:
+			OLED_ClearArea(0, 50, 127, 63);
+			OLED_ShowString(0, 50, "IDLE", OLED_6X8);
+			OLED_Update();
+			break;
+		case MODE_PASSWORD:
+			OLED_ClearArea(0, 50, 127, 63);
+			OLED_ShowString(0, 50, "PASSWORD", OLED_6X8);
+			OLED_Update();
+			break;
+		case MODE_FINGERPRINT:
+			OLED_ClearArea(0, 50, 127, 63);
+			OLED_ShowString(0, 50, "FINGERPRINT", OLED_6X8);
+			OLED_Update();
+			break;
+		default:
+			break;
+		}
 	}
 
 }
@@ -185,8 +135,9 @@ void EXTI15_10_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line15) == SET)
 	{
-		currentState = MAIN_THUMB_VERIFY;
-		
+		if(Mode_GetCurrent(&mainState) == MODE_IDLE)
+		{Mode_Set(&mainState, MODE_FINGERPRINT);}
+
 		EXTI_ClearITPendingBit(EXTI_Line15);
 	}
 	

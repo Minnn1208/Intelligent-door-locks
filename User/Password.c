@@ -11,7 +11,7 @@ uint8_t Password_Input(uint8_t keyValue)
 
     password_in[passwordIndex] = keyValue;
 	
-	if(passwordIndex < 3)
+	if(passwordIndex <= 3)
 		passwordIndex ++;
     
     return PASSWORD_NOT_ENOUGH;
@@ -47,6 +47,8 @@ uint8_t Password_Component(uint8_t keyValue)
 {
     uint8_t status = PASSWORD_DUMMY;
 
+    
+
     // 无符号数不可能小于0
     if(keyValue <= 9)
     {
@@ -55,22 +57,25 @@ uint8_t Password_Component(uint8_t keyValue)
         {
             OLED_ClearArea(0, 20, 127, 63);
             // 可能有问题
-            OLED_ShowString(0, 20, "Password Enough", OLED_8X16);
+            OLED_ShowString(0, 40, "Password Enough", OLED_6X8);
             OLED_Update();
             Delay_ms(500);
-
+           
             OLED_ClearArea(0, 20, 127, 63);
             for (uint8_t i = 0; i < PASSWORD_LEN; i++)
             {
-                OLED_ShowNum(30* i, 20, password_in[passwordIndex], 1, OLED_8X16);
+                OLED_ShowNum(30* i, 20, password_in[i], 1, OLED_8X16);
             }
+            OLED_Update();
             
         }
         else if(status == PASSWORD_NOT_ENOUGH)
         {
-            OLED_ShowNum(30 * (passwordIndex - 1), 20, password_in[passwordIndex], 1, OLED_8X16);
+            OLED_ShowNum(30 * (passwordIndex - 1), 20, password_in[passwordIndex - 1], 1, OLED_8X16);
 	        OLED_Update();
         }
+
+        
 
         status = PASSWORD_DUMMY;
     }
@@ -81,7 +86,6 @@ uint8_t Password_Component(uint8_t keyValue)
         if(status == PASSWORD_OK)
         {
             OLED_ClearArea(0, 0, 127, 63);
-            OLED_Update();
             OLED_ShowString(0, 20, "Password Correct", OLED_8X16);
             OLED_Update();
             Delay_ms(500);
@@ -89,19 +93,21 @@ uint8_t Password_Component(uint8_t keyValue)
         else if(status == PASSWORD_ERR)
         {
             OLED_ClearArea(0, 20, 127, 63);
-            OLED_Update();
             OLED_ShowString(0, 20, "Password ERROR", OLED_8X16);
             OLED_Update();
-            
-            for (uint8_t i = 0; i < PASSWORD_LEN; i++)
-            {
-                password_in[i] = 0;
-            }
-
             Delay_ms(500);
         }
 
+        for (uint8_t i = 0; i < PASSWORD_LEN; i++)
+        {
+            password_in[i] = 0;
+        }
+        passwordIndex = 0;
 
+        OLED_ClearArea(0, 20, 127, 63);
+        OLED_Update();
+
+        Mode_Set(&mainState, MODE_IDLE);
         status = PASSWORD_DUMMY;
     }
 

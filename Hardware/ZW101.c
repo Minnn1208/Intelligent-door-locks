@@ -1,7 +1,6 @@
-#include "stm32f10x.h"
+
 #include "ZW101.h"
-#include "Delay.h"
-#include <string.h>
+
 
 // 初始化外部变量
 uint8_t zwState = 0;
@@ -66,7 +65,7 @@ void ZW101_Init(void)
     NVIC_InitTypeDef  NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
