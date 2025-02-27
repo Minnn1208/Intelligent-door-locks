@@ -43,16 +43,16 @@ uint8_t Password_Delete(void)
 }
 
 
-uint8_t Password_Component(uint8_t keyValue)
+uint8_t Password_Component(uint8_t *keyValue)
 {
     uint8_t status = PASSWORD_DUMMY;
 
     
 
     // 无符号数不可能小于0
-    if(keyValue <= 9)
+    if(*keyValue <= 9)
     {
-        status = Password_Input(keyValue);
+        status = Password_Input(*keyValue);
         if(status == PASSWORD_ENOUGH)
         {
             OLED_ClearArea(0, 20, 127, 63);
@@ -76,11 +76,11 @@ uint8_t Password_Component(uint8_t keyValue)
         }
 
         
-
         status = PASSWORD_DUMMY;
     }
 
-    if(keyValue == 10)
+    /* 确认密码 */
+    if(*keyValue == 10)
     {
         status = Password_Verify();
         if(status == PASSWORD_OK)
@@ -107,24 +107,24 @@ uint8_t Password_Component(uint8_t keyValue)
         OLED_ClearArea(0, 20, 127, 63);
         OLED_Update();
 
-        Mode_Set(&mainState, MODE_IDLE);
+        Mode_Set(&currentState, MODE_IDLE);
         status = PASSWORD_DUMMY;
     }
 
-    if(keyValue == 13)
+    /* 删除最后一位密码 */
+    if(*keyValue == 13)
     {
         status = Password_Delete();
         if(status == PASSWORD_DEL_SUSS)
         {
             //TODO： 这里清除的像素坐标需要调整
-            OLED_ClearArea(30 * (passwordIndex + 1), 20, 8, 20);
+            OLED_ClearArea(30 * (passwordIndex), 20, 8, 20);
             OLED_Update();
         }
         else if(status == PASSWORD_DEL_FAIL)
         {
             OLED_ClearArea(0, 20, 127, 63);
-            OLED_Update();
-            OLED_ShowString(0, 20, "Password ERROR", OLED_8X16);
+            OLED_ShowString(0, 20, "No Password", OLED_8X16);
             OLED_Update();
             
             uint8_t len = passwordIndex + 1 > 4 ? PASSWORD_LEN : passwordIndex + 1;
@@ -135,8 +135,15 @@ uint8_t Password_Component(uint8_t keyValue)
             }
 
             Delay_ms(500);
+            OLED_ClearArea(0, 20, 127, 63);
+            OLED_Update();
+
+            Mode_Set(&currentState, MODE_IDLE);
         }
     }
+
+    /* 重置键值 */
+    *keyValue = 99;
 
     return status;
 }

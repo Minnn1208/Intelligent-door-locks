@@ -39,3 +39,12 @@ void Delay_s(uint32_t xs)
 		Delay_ms(1000);
 	}
 } 
+
+void delay(uint32_t xs)
+{
+	while (xs)
+	{
+		xs --;
+	}
+	
+}

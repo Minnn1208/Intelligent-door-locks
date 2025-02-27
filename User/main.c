@@ -7,8 +7,8 @@
 
 
 
-uint8_t keyValue = 0x00;
-
+uint8_t keyValue = 99;
+uint8_t colAndRow = 99;
 
 void Thumb_OpenDoor(void)
 {
@@ -36,15 +36,62 @@ void Thumb_OpenDoor(void)
 	}
 	Delay_ms(1000);
 	
-	Mode_Set(&mainState, MODE_IDLE);
+	Mode_Set(&currentState, MODE_IDLE);
+}
+
+
+void KeyValueRemap(uint8_t colAndRow, uint8_t *keyValue)
+{
+	switch (colAndRow)
+	{
+	case 1:
+		*keyValue = 0;							// 数字0
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 2:
+	case 3:
+	case 4:
+		*keyValue = colAndRow + 11;				// 键值13-15
+		break;
+	case 5:
+	case 6:
+	case 7:
+		*keyValue = colAndRow + 2;				// 数字7-9
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 8:
+		*keyValue = colAndRow + 4;				// 键值12
+		break;
+	case 9:
+	case 10:
+	case 11:
+		*keyValue = colAndRow - 5;				// 数字4-6
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 12:
+		*keyValue = colAndRow - 1;				// 键值12
+		break;
+	case 13:
+	case 14:
+	case 15:
+		*keyValue = colAndRow - 12;				// 数字1-3
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 16:
+		*keyValue = colAndRow - 6;				// 键值16
+		break;
+	default:
+		*keyValue = 99;
+		break;
+	}
 }
 
 
 int main(void)
 {
-	Mode_Init(&mainState);
+	Mode_Init(&currentState);
 	OLED_Init();
-	/* Keyboard_Init(); */
+	Keyboard_Init();
 	ZW101_Init();
 	Delay_ms(80);
 
@@ -68,20 +115,15 @@ int main(void)
 	while(1)
 	{
 
-		/* keyValue = Key_Scan(); */
-		/* keyValue = Key_Scan();
-		OLED_Clear();
-		OLED_ShowNum(30, 30, keyValue, 2, OLED_8X16);
-		OLED_Update(); */
-		
-		switch (mainState.currentMode)
+			
+		switch (currentState.currentMode)
 		{
 		case MODE_FINGERPRINT:
 			Thumb_OpenDoor();
 			break;
-		/* case MODE_PASSWORD:
-			Password_Component(keyValue);
-			break; */
+		case MODE_PASSWORD:
+			Password_Component(&keyValue);
+			break;
 			
 		default:
 			OLED_Clear();
@@ -89,22 +131,25 @@ int main(void)
 			break;
 		}
 
-		switch (Mode_GetCurrent(&mainState))
+		switch (Mode_GetCurrent(&currentState))
 		{
 		case MODE_IDLE:
 			OLED_ClearArea(0, 50, 127, 63);
 			OLED_ShowString(0, 50, "IDLE", OLED_6X8);
 			OLED_Update();
+			Delay_ms(20);
 			break;
 		case MODE_PASSWORD:
 			OLED_ClearArea(0, 50, 127, 63);
 			OLED_ShowString(0, 50, "PASSWORD", OLED_6X8);
 			OLED_Update();
+			Delay_ms(20);
 			break;
 		case MODE_FINGERPRINT:
 			OLED_ClearArea(0, 50, 127, 63);
 			OLED_ShowString(0, 50, "FINGERPRINT", OLED_6X8);
 			OLED_Update();
+			Delay_ms(20);
 			break;
 		default:
 			break;
@@ -135,10 +180,88 @@ void EXTI15_10_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line15) == SET)
 	{
-		if(Mode_GetCurrent(&mainState) == MODE_IDLE)
-		{Mode_Set(&mainState, MODE_FINGERPRINT);}
+		if(Mode_GetCurrent(&currentState) == MODE_IDLE)
+		{Mode_Set(&currentState, MODE_FINGERPRINT);}
 
 		EXTI_ClearITPendingBit(EXTI_Line15);
+		return;
+	}
+
+	if(EXTI_GetITStatus(EXTI_Line14) == SET)
+	{
+		delay(1000);
+		if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_14) == Bit_RESET)
+		{
+			for(uint8_t row = 0; row < 4; row ++)
+			{
+				GPIO_SetBits(GPIOB, Key_Row[row].GPIO_Pin);
+				if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_14) == Bit_SET)
+				{ 
+					colAndRow = 4 * row + 4;
+				}
+				GPIO_ResetBits(GPIOB, Key_Row[row].GPIO_Pin);
+			}
+		}
+
+		EXTI_ClearITPendingBit(EXTI_Line14);
+	} 
+	
+	if(EXTI_GetITStatus(EXTI_Line13) == SET)
+	{
+		delay(1000);
+		if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_13) == Bit_RESET)
+		{
+			for(uint8_t row = 0; row < 4; row ++)
+			{
+				GPIO_SetBits(GPIOB, Key_Row[row].GPIO_Pin);
+				if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_13) == Bit_SET)
+				{ 
+					colAndRow = 4 * row + 3;
+				}
+				GPIO_ResetBits(GPIOB, Key_Row[row].GPIO_Pin);
+			}
+		}
+
+		EXTI_ClearITPendingBit(EXTI_Line13);
+	}
+
+	if(EXTI_GetITStatus(EXTI_Line12) == SET)
+	{
+		delay(1000);
+		if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_12) == Bit_RESET)
+		{
+			for(uint8_t row = 0; row < 4; row ++)
+			{
+				GPIO_SetBits(GPIOB, Key_Row[row].GPIO_Pin);
+				if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_12) == Bit_SET)
+				{ 
+					colAndRow = 4 * row + 2;
+				}
+				GPIO_ResetBits(GPIOB, Key_Row[row].GPIO_Pin);
+			}
+		}
+
+		EXTI_ClearITPendingBit(EXTI_Line12);
 	}
 	
+	if(EXTI_GetITStatus(EXTI_Line11) == SET)
+	{
+		delay(1000);
+		if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11) == Bit_RESET)
+		{
+			for(uint8_t row = 0; row < 4; row ++)
+			{
+				GPIO_SetBits(GPIOB, Key_Row[row].GPIO_Pin);
+				if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11) == Bit_SET)
+				{ 
+					colAndRow = 4 * row + 1;
+				}
+				GPIO_ResetBits(GPIOB, Key_Row[row].GPIO_Pin);
+			}
+		}
+
+		EXTI_ClearITPendingBit(EXTI_Line11);
+	} 
+
+	KeyValueRemap(colAndRow, &keyValue);
 }

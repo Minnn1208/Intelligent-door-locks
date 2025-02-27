@@ -24,8 +24,78 @@
 #define KEY_VALUE_15()              (Key[0][3])
 #define KEY_VALUE_0()               (Key[0][0])
 
-extern uint8_t Key[4][4];
 
+/* 
+#define KET_COL1_GPIOX           GPIOB
+#define KET_COL1_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL1_GPIO_PIN        GPIO_Pin_11
+#define KET_COL1_PIN_SOC         GPIO_PinSource11
+#define KET_COL1_EXTI_LINE       EXTI_Line11
+#define KET_COL1_IRQN            EXTI15_10_IRQn
+#define KET_COL2_GPIOX           GPIOB
+#define KET_COL2_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL2_GPIO_PIN        GPIO_Pin_12
+#define KET_COL2_PIN_SOC         GPIO_PinSource12
+#define KET_COL2_EXTI_LINE       EXTI_Line12
+#define KET_COL2_IRQN            EXTI15_10_IRQn
+#define KET_COL3_GPIOX           GPIOB
+#define KET_COL3_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL3_GPIO_PIN        GPIO_Pin_13
+#define KET_COL3_PIN_SOC         GPIO_PinSource13
+#define KET_COL3_EXTI_LINE       EXTI_Line13
+#define KET_COL3_IRQN            EXTI15_10_IRQn
+#define KET_COL4_GPIOX           GPIOB
+#define KET_COL4_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL4_GPIO_PIN        GPIO_Pin_14
+#define KET_COL4_PIN_SOC         GPIO_PinSource14
+#define KET_COL4_EXTI_LINE       EXTI_Line14
+#define KET_COL4_IRQN            EXTI15_10_IRQn
+
+#define KET_COL1_GPIOX           GPIOB
+#define KET_COL1_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL1_GPIO_PIN        GPIO_Pin_11
+#define KET_COL1_PIN_SOC         GPIO_PinSource11
+#define KET_COL1_EXTI_LINE       EXTI_Line11
+#define KET_COL1_IRQN            EXTI15_10_IRQn
+#define KET_COL2_GPIOX           GPIOB
+#define KET_COL2_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL2_GPIO_PIN        GPIO_Pin_12
+#define KET_COL2_PIN_SOC         GPIO_PinSource12
+#define KET_COL2_EXTI_LINE       EXTI_Line12
+#define KET_COL2_IRQN            EXTI15_10_IRQn
+#define KET_COL3_GPIOX           GPIOB
+#define KET_COL3_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL3_GPIO_PIN        GPIO_Pin_13
+#define KET_COL3_PIN_SOC         GPIO_PinSource13
+#define KET_COL3_EXTI_LINE       EXTI_Line13
+#define KET_COL3_IRQN            EXTI15_10_IRQn
+#define KET_COL4_GPIOX           GPIOB
+#define KET_COL4_GPIO_PORT       GPIO_PortSourceGPIOB
+#define KET_COL4_GPIO_PIN        GPIO_Pin_14
+#define KET_COL4_PIN_SOC         GPIO_PinSource14
+#define KET_COL4_EXTI_LINE       EXTI_Line14
+#define KET_COL4_IRQN            EXTI15_10_IRQn
+ */
+struct Key_Colum_Struct
+{
+    GPIO_TypeDef* GPIOx;
+    uint8_t GPIO_PortSource;
+    uint16_t GPIO_Pin;
+    uint8_t GPIO_PinSource;
+    uint16_t EXTI_Line;
+    uint8_t NVIC_IRQChannel;
+};
+
+struct Key_Row_Struct
+{
+    GPIO_TypeDef* GPIOx;
+    uint16_t GPIO_Pin;
+    uint8_t colORrow;
+};
+
+extern uint8_t Key[4][4];
+extern struct Key_Colum_Struct Key_Column[4];
+extern struct Key_Row_Struct Key_Row[4];
 void Keyboard_Init(void);
 uint8_t Key_Scan(void);
 

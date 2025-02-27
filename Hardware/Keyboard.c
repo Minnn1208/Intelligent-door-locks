@@ -1,26 +1,21 @@
 #include "Keyboard.h"
 
 
-struct Key_Struct
-{
-    GPIO_TypeDef* GPIOx;
-    uint16_t GPIO_Pin;
-};
 
 /* 由上到下对应C4 C3 C2 C1 */
-static struct Key_Struct Key_Column[4] = {
-    {GPIOB, GPIO_Pin_11},
-    {GPIOB, GPIO_Pin_10},
-    {GPIOB, GPIO_Pin_1},
-    {GPIOB, GPIO_Pin_0}
+extern struct Key_Colum_Struct Key_Column[4] = {
+    {GPIOB, GPIO_PortSourceGPIOB, GPIO_Pin_11, GPIO_PinSource11, EXTI_Line11, EXTI15_10_IRQn},
+    {GPIOB, GPIO_PortSourceGPIOB, GPIO_Pin_12, GPIO_PinSource12, EXTI_Line12, EXTI15_10_IRQn},
+    {GPIOB, GPIO_PortSourceGPIOB, GPIO_Pin_13, GPIO_PinSource13, EXTI_Line13, EXTI15_10_IRQn},
+    {GPIOB, GPIO_PortSourceGPIOB, GPIO_Pin_14, GPIO_PinSource14, EXTI_Line14, EXTI15_10_IRQn}
 };
 
 /* 由上到下对应R1 R2 R3 R4 */
-static struct Key_Struct Key_Row[4] = {
-    {GPIOA, GPIO_Pin_7},
-    {GPIOA, GPIO_Pin_6},
-    {GPIOA, GPIO_Pin_5},
-    {GPIOA, GPIO_Pin_4}
+extern struct Key_Row_Struct Key_Row[4] = {
+    {GPIOB, GPIO_Pin_5, 0},
+    {GPIOB, GPIO_Pin_6, 1},
+    {GPIOB, GPIO_Pin_7, 2},
+    {GPIOB, GPIO_Pin_8, 3}
 };
 
 uint8_t Key[4][4] = {0};
@@ -28,33 +23,50 @@ uint8_t Key[4][4] = {0};
 void Keyboard_Init(void)
 {
     /* 开启时钟 */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
     /* GPIO初始化 */
     GPIO_InitTypeDef GPIO_InitStructure;
+    EXTI_InitTypeDef EXTI_InitStructure;
+    NVIC_InitTypeDef  NVIC_InitStructure;
+
 
     for(uint8_t i = 0; i < 4; i++)
     {
+
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
         GPIO_InitStructure.GPIO_Pin = Key_Column[i].GPIO_Pin;
         GPIO_Init(Key_Column[i].GPIOx, &GPIO_InitStructure);
+        GPIO_EXTILineConfig(Key_Column[i].GPIO_PortSource, Key_Column[i].GPIO_PinSource);
+
+        EXTI_InitStructure.EXTI_Line = Key_Column[i].EXTI_Line;
+        EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+        EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+        EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+        EXTI_Init(&EXTI_InitStructure); 
+
+        NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+        NVIC_InitStructure.NVIC_IRQChannel = Key_Column[i].NVIC_IRQChannel;
+        NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
+        NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+        NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+        NVIC_Init(&NVIC_InitStructure);
     }
+
     for(uint8_t i = 0; i < 4; i++)
     {
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
         GPIO_InitStructure.GPIO_Pin = Key_Row[i].GPIO_Pin;
         GPIO_Init(Key_Row[i].GPIOx, &GPIO_InitStructure);
-    
     }
 
     for(uint8_t i = 0; i < 4; i++)
     {
-        GPIO_SetBits(Key_Row[i].GPIOx, Key_Row[i].GPIO_Pin);
+        GPIO_ResetBits(Key_Row[i].GPIOx, Key_Row[i].GPIO_Pin);
     }
-
 }
 
 uint8_t Key_Scan(void)
@@ -80,7 +92,7 @@ uint8_t Key_Scan(void)
     }
 
 
-    if(Mode_GetCurrent(&mainState) == MODE_FINGERPRINT)
+    if(Mode_GetCurrent(&currentState) == MODE_FINGERPRINT)
     {
         return 99;
     }
@@ -88,58 +100,58 @@ uint8_t Key_Scan(void)
 
     if(KEY_VALUE_1() == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 1;
     }
     else if(KEY_VALUE_2() == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 2;
     }
     else if(KEY_VALUE_3() == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 3;
     }
     else if(KEY_VALUE_10() == 1)
         return 10; 
     else if(KEY_VALUE_4()  == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 4;
     }
     else if(KEY_VALUE_5()  == 1)
     {   
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 5;
     }
     else if(KEY_VALUE_6()  == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 6;
     }
     else if(KEY_VALUE_11()  == 1)
         return 11;
     else if(KEY_VALUE_7()  == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 7;
     }
     else if(KEY_VALUE_8()  == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 8;
     }
     else if(KEY_VALUE_9()  == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 9;
     }
     else if(KEY_VALUE_12()  == 1)
         return 12;
     else if(KEY_VALUE_0()  == 1)
     {
-        Mode_Set(&mainState, MODE_PASSWORD);
+        Mode_Set(&currentState, MODE_PASSWORD);
         return 0;
     }
     else if(KEY_VALUE_13()  == 1)

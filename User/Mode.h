@@ -16,7 +16,7 @@ typedef struct {
     uint8_t isActive;     // 模式是否激活（1: 激活, 0: 未激活）
 } ModeStatus;
 
-extern ModeStatus mainState;
+extern ModeStatus currentState;
 
 // 函数声明
 void Mode_Init(ModeStatus *modeStatus);                      // 初始化模式

@@ -1,7 +1,7 @@
 #include "Mode.h"
 #include <string.h>
 
-ModeStatus mainState;
+ModeStatus currentState;
 
 // 初始化模式状态
 void Mode_Init(ModeStatus *modeStatus) {

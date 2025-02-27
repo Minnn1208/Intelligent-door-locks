@@ -17,6 +17,6 @@ static uint8_t password[4] = {1, 2, 3, 8};
 static uint8_t password_in[4] = {0};
 static uint8_t passwordIndex = 0;
 
-uint8_t Password_Component(uint8_t keyValue);
+uint8_t Password_Component(uint8_t *keyValue);
 
 #endif
