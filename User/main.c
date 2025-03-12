@@ -4,99 +4,29 @@
 #include "Password.h"
 #include "Delay.h"
 #include "ZW101.h"
-
+#include "Servo.h"
 
 
 uint8_t keyValue = 99;
 uint8_t colAndRow = 99;
 
-void Thumb_OpenDoor(void)
-{
-	uint8_t state = 0x00;
-	ZW101_VerifyThumbCommand();
-	state = ZW101_VerifyThumb();
-	if(state == ZW101_VERIFY_PASS)
-	{
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Thumb Pass", OLED_6X8);
-		OLED_Update();
-	}
-	else if(state == ZW101_VERIFY_NOT_PASS)
-	{
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Thumb Not Pass", OLED_6X8);
-		OLED_Update();
-		
-	}
-	else
-	{
-		OLED_Clear();
-		OLED_ShowString(0, 0, "ZW101_VERIFY_ERROR", OLED_6X8);
-		OLED_Update();
-	}
-	Delay_ms(1000);
-	
-	Mode_Set(&currentState, MODE_IDLE);
-}
-
-
-void KeyValueRemap(uint8_t colAndRow, uint8_t *keyValue)
-{
-	switch (colAndRow)
-	{
-	case 1:
-		*keyValue = 0;							// 数字0
-		Mode_Set(&currentState, MODE_PASSWORD);
-		break;
-	case 2:
-	case 3:
-	case 4:
-		*keyValue = colAndRow + 11;				// 键值13-15
-		break;
-	case 5:
-	case 6:
-	case 7:
-		*keyValue = colAndRow + 2;				// 数字7-9
-		Mode_Set(&currentState, MODE_PASSWORD);
-		break;
-	case 8:
-		*keyValue = colAndRow + 4;				// 键值12
-		break;
-	case 9:
-	case 10:
-	case 11:
-		*keyValue = colAndRow - 5;				// 数字4-6
-		Mode_Set(&currentState, MODE_PASSWORD);
-		break;
-	case 12:
-		*keyValue = colAndRow - 1;				// 键值12
-		break;
-	case 13:
-	case 14:
-	case 15:
-		*keyValue = colAndRow - 12;				// 数字1-3
-		Mode_Set(&currentState, MODE_PASSWORD);
-		break;
-	case 16:
-		*keyValue = colAndRow - 6;				// 键值16
-		break;
-	default:
-		*keyValue = 99;
-		break;
-	}
-}
-
 
 int main(void)
 {
+	
 	Mode_Init(&currentState);
 	OLED_Init();
 	Keyboard_Init();
 	ZW101_Init();
+	Servo_Init();
+	Servo_SetAngle(90);
 	Delay_ms(80);
-
+	
+	
+	
+	
 	ZW101_HandShakeCommand();
-	Delay_ms(100);
+	/* Delay_ms(100); */
 	switch (ZW101_HandShakeVerify())
 	{
 		case ZW101_HANDSHAKE_SUCCESS:
@@ -114,8 +44,6 @@ int main(void)
 
 	while(1)
 	{
-
-			
 		switch (currentState.currentMode)
 		{
 		case MODE_FINGERPRINT:

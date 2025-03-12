@@ -98,5 +98,6 @@ extern struct Key_Colum_Struct Key_Column[4];
 extern struct Key_Row_Struct Key_Row[4];
 void Keyboard_Init(void);
 uint8_t Key_Scan(void);
+void KeyValueRemap(uint8_t colAndRow, uint8_t *keyValue);
 
 # endif

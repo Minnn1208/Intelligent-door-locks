@@ -58,3 +58,4 @@ JLinkLog.txt
 .pack
 *.code-workspace
 *.clang-formatObjects/
+.idea

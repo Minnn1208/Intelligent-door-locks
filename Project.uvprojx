@@ -445,6 +445,16 @@
               <FileType>5</FileType>
               <FilePath>.\User\Password.h</FilePath>
             </File>
+            <File>
+              <FileName>Mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Mode.c</FilePath>
+            </File>
+            <File>
+              <FileName>ZW101_LinkList.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\ZW101_LinkList.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -534,6 +544,16 @@
               <FileName>ZW101.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\ZW101.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>Servo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Servo.c</FilePath>
             </File>
           </Files>
         </Group>

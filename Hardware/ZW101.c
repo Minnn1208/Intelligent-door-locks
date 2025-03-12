@@ -186,4 +186,69 @@ void Clear_Buffer(void)
 
 
 
-
+/**
+ * @brief 执行开锁并开启门的动作
+ * 
+ * 本函数通过验证指纹来决定是否开锁并开启门如果指纹验证通过，则清除OLED屏幕内容，
+ * 显示“Thumb Pass”，并更新屏幕，然后执行开门动作如果指纹验证未通过，则清除OLED屏幕内容，
+ * 显示“Thumb Not Pass”，并更新屏幕如果指纹验证出错，则清除OLED屏幕内容，显示“ZW101_VERIFY_ERROR”，
+ * 并更新屏幕无论哪种情况，1秒后都会执行关门动作，并将系统状态设置为闲置状态
+ */
+void Thumb_OpenDoor(void)
+{
+    // 初始化状态变量
+    uint8_t state = 0x00;
+    
+    // 发送指纹验证命令
+    ZW101_VerifyThumbCommand();
+    
+    // 获取指纹验证结果
+    state = ZW101_VerifyThumb();
+    
+    // 根据验证结果执行相应操作
+    if(state == ZW101_VERIFY_PASS)
+    {
+        // 清除OLED屏幕内容
+        OLED_Clear();
+        
+        // 在OLED屏幕上显示验证通过的信息
+        OLED_ShowString(0, 0, "Thumb Pass", OLED_6X8);
+        
+        // 更新OLED屏幕
+        OLED_Update();
+        
+        // 执行开门动作
+        Servo_OpenDoor();
+    }
+    else if(state == ZW101_VERIFY_NOT_PASS)
+    {
+        // 清除OLED屏幕内容
+        OLED_Clear();
+        
+        // 在OLED屏幕上显示验证未通过的信息
+        OLED_ShowString(0, 0, "Thumb Not Pass", OLED_6X8);
+        
+        // 更新OLED屏幕
+        OLED_Update();
+    }
+    else
+    {
+        // 清除OLED屏幕内容
+        OLED_Clear();
+        
+        // 在OLED屏幕上显示验证出错的信息
+        OLED_ShowString(0, 0, "ZW101_VERIFY_ERROR", OLED_6X8);
+        
+        // 更新OLED屏幕
+        OLED_Update();
+    }
+    
+    // 延时1秒
+    Delay_ms(1000);
+    
+    // 执行关门动作
+    Servo_CloseDoor();
+    
+    // 将系统状态设置为闲置状态
+    Mode_Set(&currentState, MODE_IDLE);
+}

@@ -165,3 +165,50 @@ uint8_t Key_Scan(void)
 
 }
 
+
+void KeyValueRemap(uint8_t colAndRow, uint8_t *keyValue)
+{
+	switch (colAndRow)
+	{
+	case 1:
+		*keyValue = 0;							// 数字0
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 2:
+	case 3:
+	case 4:
+		*keyValue = colAndRow + 11;				// 键值13-15
+		break;
+	case 5:
+	case 6:
+	case 7:
+		*keyValue = colAndRow + 2;				// 数字7-9
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 8:
+		*keyValue = colAndRow + 4;				// 键值12
+		break;
+	case 9:
+	case 10:
+	case 11:
+		*keyValue = colAndRow - 5;				// 数字4-6
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 12:
+		*keyValue = colAndRow - 1;				// 键值12
+		break;
+	case 13:
+	case 14:
+	case 15:
+		*keyValue = colAndRow - 12;				// 数字1-3
+		Mode_Set(&currentState, MODE_PASSWORD);
+		break;
+	case 16:
+		*keyValue = colAndRow - 6;				// 键值16
+		break;
+	default:
+		*keyValue = 99;
+		break;
+	}
+}
+

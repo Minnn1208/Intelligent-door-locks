@@ -7,6 +7,8 @@
 #include "Serial.h"
 #include "Delay.h"
 #include "OLED.h"
+#include "Mode.h"
+#include "Servo.h"
 
 
 #define RX_BUFFER_SIZE                          99
